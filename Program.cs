@@ -18,7 +18,7 @@ namespace ATM_Simulation
                 */
 
 
-            Transactions t1 = new Transactions(Agha.customerID, "T-001", Agha.accountBalance);
+           // Transactions t1 = new Transactions(Agha.customerID, "T-001", Agha.accountBalance);
 
             // Driver Code
 

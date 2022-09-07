@@ -4,6 +4,9 @@ using System.Globalization;
 using System.Linq.Expressions;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Xml;
+using Newtonsoft.Json;
 
 namespace ATM_Simulation
 {
@@ -42,12 +45,14 @@ namespace ATM_Simulation
             Console.WriteLine(record);
         }
 
+
+        // Validations and verifications
         public void validation()
         {
 
             try
             {
-                // Taking Account Input
+                // Taking Account Number Input
                 Console.WriteLine("\nEnter Card Number: ");
                 int enteredAccNo = Convert.ToInt32(Console.ReadLine());
 
@@ -98,24 +103,21 @@ namespace ATM_Simulation
 
         }
 
+        // Options for user
+
         public void ProcessOptions()
         {
             Console.WriteLine("\nWelcome!\n");
-            Console.WriteLine("Press 1 to View Transations." + "\n" +
-                              "Press 2 to Withdraw Amount." + "\n" +
-                              "Press 3 to change Pin-Code." + "\n");
+            Console.WriteLine("Press 1 to Withdraw Amount." + "\n" +
+                              "Press 2 to change Pin-Code." + "\n");
 
             string mainOption = Console.ReadLine();
 
 
             switch (mainOption)
             {
+               
                 case "1":
-
-                    Console.WriteLine("\nWelcome to Transactions");
-                    break;
-
-                case "2":
                     Console.WriteLine("\nSelect WithDrawal Method:");
 
                     Console.WriteLine("\nPress 1 for Fast Cash Withdrawal." + "\n" +
@@ -142,14 +144,17 @@ namespace ATM_Simulation
                     }
                     break;
 
-                case "3":
+                case "2":
                     //Console.WriteLine(Pin Number);
                     ChangePin();
                     break;
+
+
             }
 
         }
 
+       // Fast Cash Withdrawal
 
         public void FastCashWithdrawal()
         {
@@ -173,6 +178,11 @@ namespace ATM_Simulation
                     {
                         accountBalance = accountBalance - amount;
                         Console.WriteLine("\nTransaction successfull. Your updated balance is PKR." + accountBalance + "/=");
+
+                        Transactions transaction = new Transactions();
+                        transaction.TransactionItems(customerID, amount, accountBalance);
+                        transaction.DisplayTransactions();
+
                     }
 
                     else {
@@ -215,6 +225,8 @@ namespace ATM_Simulation
 
             }
         }
+
+        // Custom Cash Withdrawal
 
         public void CustomCashWithdrawal()
         {
@@ -263,6 +275,7 @@ namespace ATM_Simulation
             }
         }
 
+        // Change Pin Number
         public void ChangePin()
         {
             Console.WriteLine("\nEnter your current Pin-Number:");
@@ -320,10 +333,5 @@ namespace ATM_Simulation
                 }
             }
         }
-
-       /* public void handleTransactions()
-        {
-            Console.WriteLine("\nWelcome to transactions");
-        } */
     }
 }

@@ -1,30 +1,56 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 
 namespace ATM_Simulation
 {
-     class Transactions : Customer
+    class Transactions : Customer
     {
 
         public string customerID { get; set; }
-        public string transactionID { get; set; }
+        public int transactionID { get; set; }
         public string date { get; set; }
+
         public double accountBalance { get; set; }
 
+        public int i { get; set; }
 
 
-        public Transactions(string cus_id, string trans_id, double accBal)
+        Object[] transactionArray = { };
+
+        public void TransactionItems(string cus_id, int amount, double accBal)
         {
-            customerID = cus_id;
-            transactionID = trans_id;
-            date = DateTime.Now.ToString("dddd, dd MMMM yyyy");
-            accountBalance = accBal;
+
+            Object[] transactionObj = {
+
+                new { key = "customerID" , value = cus_id },
+                new { key = "transactionID", value = i },
+                new { key = "date" , value = DateTime.Now.ToString("dddd, dd MMMM yyyy") },
+                new { key = "transAmmount", value = amount },
+                new { key = "accountBalance", value = accBal }
+            };
+
+
+            // Add Objects at the end of array
+
+            transactionArray = transactionArray.Append(transactionObj).ToArray();
+
         }
 
-        public void displayAccountNumber()
-        {
-            Console.WriteLine("ID=" + customerID + ", balance = " + accountBalance);
+        public void DisplayTransactions()
+        { 
+
+        int x = 0;
+            foreach (Object[] obj in transactionArray) {
+                Console.WriteLine(JsonConvert.SerializeObject(obj, Formatting.Indented));
+                Console.WriteLine("x= " + x);
+                x = x+1;
+            }
         }
-    }
+    }  
 }
