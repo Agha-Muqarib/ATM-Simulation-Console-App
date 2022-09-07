@@ -40,14 +40,13 @@ namespace ATM_Simulation
                     if (visitflag == false)
                     {
                         Agha.validation();
-                        Agha.DisplayRecord();
+                       // Agha.DisplayRecord();
                         visitflag = true;
                     }
 
                     else
                     {
                         Agha.ProcessOptions();
-                        Agha.DisplayRecord();
                     }
                 }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq.Expressions;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -19,7 +20,7 @@ namespace ATM_Simulation
 
         // Constructor 
 
-        public Customer(){}
+        public Customer() { }
 
         public Customer(string cus_ID, string fName, string lName, int accountNum, int pinNum, double accountBal)
         {
@@ -32,9 +33,9 @@ namespace ATM_Simulation
         }
 
 
-    // Methods
+        // Methods
 
-    public void DisplayRecord()
+        public void DisplayRecord()
         {
             string record = $"\nThe account number {accountCardNumber} belongs to ID:{customerID}, {firstName} {lastName}, " +
                              $"pin number {pinNumber}, with an available balance equal to PKR. {accountBalance} /= ";
@@ -53,7 +54,7 @@ namespace ATM_Simulation
                 if (enteredAccNo == accountCardNumber)
                 {
 
-                    Console.WriteLine("\nAccount Verified!" + "\n" );
+                    Console.WriteLine("\nAccount Verified!" + "\n");
 
                     Console.WriteLine("Enter Pin Number: ");
                     int enteredPinNo = Convert.ToInt32(Console.ReadLine());
@@ -65,9 +66,8 @@ namespace ATM_Simulation
 
                         if (enteredPinNo == pinNumber)
                         {
-                            Console.WriteLine("\nPin Verified ! " + "\n" );
+                            Console.WriteLine("\nPin Verified ! " + "\n");
 
-                            DisplayRecord();
                             ProcessOptions();
                         }
 
@@ -89,7 +89,7 @@ namespace ATM_Simulation
                     throw new InvalidOperationException("\nInvalid Account Number");
 
                 }
-                
+
             }
 
             catch {
@@ -111,7 +111,7 @@ namespace ATM_Simulation
             switch (mainOption)
             {
                 case "1":
-                
+
                     Console.WriteLine("\nWelcome to Transactions");
                     break;
 
@@ -123,17 +123,17 @@ namespace ATM_Simulation
 
                     string subOption = Console.ReadLine();
 
-                  
+
                     if (subOption == "1")
                     {
                         //Console.WriteLine("fast withdrawal");
                         FastCashWithdrawal();
-                    }   
+                    }
 
                     else if (subOption == "2")
                     {
                         //Console.WriteLine("custom withdrawal");
-                        customCashWithdrawal();
+                        CustomCashWithdrawal();
                     }
 
                     else
@@ -144,10 +144,10 @@ namespace ATM_Simulation
 
                 case "3":
                     //Console.WriteLine(Pin Number);
-                    changePin();
+                    ChangePin();
                     break;
             }
-            
+
         }
 
 
@@ -197,7 +197,7 @@ namespace ATM_Simulation
 
                     break;
 
-                    case "3":
+                case "3":
 
                     amount = 1000;
                     if (amount < accountBalance)
@@ -212,20 +212,62 @@ namespace ATM_Simulation
                     }
 
                     break;
-            
+
             }
         }
 
-        public void customCashWithdrawal()
+        public void CustomCashWithdrawal()
         {
             Console.WriteLine("\nWelcome to Custom Cash Withdrawal.");
+
+            DayOfWeek transactionTimeDay = DateTime.Now.DayOfWeek; ;
+            int transactionLimit = 5;
+            DayOfWeek currentDay = DateTime.Now.DayOfWeek;
+
+            while (transactionTimeDay == currentDay)
+            { 
+
+                if (transactionLimit != 0)
+                {
+                    Console.WriteLine("\nEnter the amount you wish to withdraw:");
+                    int transactionAmount = Convert.ToInt32(Console.ReadLine());
+
+                    if (transactionAmount <= 1000)
+                    {
+                        accountBalance = accountBalance - transactionAmount;
+                        Console.WriteLine("\nAmount Withdrawal successful. Your new account balance is PKR. " + accountBalance + "/=\n");
+                        transactionLimit--;
+                        Console.WriteLine("\nYou've " + transactionLimit + " Transactions left for today.\nPress 1 to transact again.\nPress 2 to exit.");
+
+                        int choice = Convert.ToInt32(Console.ReadLine());
+                        if (choice == 2)
+                        {
+                            Console.WriteLine("\nThankyou, see you later.");
+                            break;
+                        }
+                    }
+
+                    else
+                    {
+                        Console.WriteLine("\nAmount cannot be greater than PKR. 1000/=");
+                    }
+
+                }
+                
+                else
+                {
+                    Console.WriteLine("\nThe transaction limit for today is exceeded.");
+                    break;
+                
+                }    
+            }
         }
 
-        public void changePin()
+        public void ChangePin()
         {
             Console.WriteLine("\nEnter your current Pin-Number:");
             int i = 0;
-            int j = 3;
+            int j = 2;
 
             int currentPin;
 
@@ -235,22 +277,22 @@ namespace ATM_Simulation
 
                 if (currentPin == pinNumber)
                 {
-                    Console.WriteLine("\nPin Verified." +
-                                      "\nEnter your new Pin:");
+                    Console.WriteLine("\nPin Verified.\n\nEnter your new Pin:");
 
                     int newPin = Convert.ToInt32(Console.ReadLine());
 
-                    Console.WriteLine("newPin = " + newPin);
-                    Console.WriteLine("pinNumber = " + pinNumber);
+                    //Console.WriteLine("newPin = " + newPin);
+                   // Console.WriteLine("pinNumber = " + pinNumber);
 
                     if (newPin.ToString().Length == 4)
                     {
                         pinNumber = newPin;
 
-                        Console.WriteLine("pinNumber = " + pinNumber);
+                        //Console.WriteLine("pinNumber = " + pinNumber);
 
                         Console.WriteLine("\nPin Reset Successfull."
-                                + "\nYour new pin is " + pinNumber);
+                                + "\nYour new pin is " + pinNumber + ".");
+                        DisplayRecord();
                         break;
                     }
                 
@@ -265,10 +307,15 @@ namespace ATM_Simulation
 
                 else
                 {
-                        Console.WriteLine("\nInvalid Pin. Enter pin again: ");
-                        Console.WriteLine("You have " + j + " tries left.");
-                        i++;
-                        j--;
+                    Console.WriteLine("\nInvalid Pin. Enter pin again: ");
+                    Console.WriteLine("You have " + j + " tries left.");
+                    i++;
+                    j--;
+
+                    if (j < 0)
+                    {
+                        Console.WriteLine("\nYou've no tries left. Account is suspended for a day. Be back tomorrow.");
+                    }
                     
                 }
             }
